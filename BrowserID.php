@@ -54,6 +54,8 @@ class BrowserID extends dcUrlHandlers
         }
     }
     
+    
+    
     /**
      * Display the login page
      * 
@@ -71,29 +73,54 @@ class BrowserID extends dcUrlHandlers
         );
         if ($args == 'js') {
             self::serveDocument('login.js', 'application/javascript');
-        } else if (substr($args, 0, 9)=="assertion") {
-            $url = "https://browserid.org/verify";
-            $curl = curl_init($url);
-            curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt(
-                $curl, CURLOPT_POSTFIELDS, "assertion=".strval(
-                    substr($args, 10)
-                )."&audience=".$_SERVER["HTTP_HOST"]
-            );
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            $response=json_decode(strval(curl_exec($curl)));
-            curl_close($curl);
-            if ($response->status==="okay") {
-                $users=$core->getUsers();
-                while (!$users->isEnd()) { 
+        } else {
+            if (substr($args, 0, 9)=="assertion") {
+                $url = "https://browserid.org/verify";
+                $curl = curl_init($url);
+                curl_setopt($curl, CURLOPT_POST, 1);
+                curl_setopt(
+                    $curl, CURLOPT_POSTFIELDS, "assertion=".strval(
+                        substr($args, 10)
+                    )."&audience=".$_SERVER["HTTP_HOST"]
+                );
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+                $response=json_decode(strval(curl_exec($curl)));
+                curl_close($curl);
+                if ($response->status==="okay") {
+                    $users=$core->getUsers();
+                    while (!$users->isEnd()) { 
+                        self::_login($users, $response);
+                        $users->moveNext();
+                    }
                     self::_login($users, $response);
-                    $users->moveNext();
+                    $_ctx->error = __(
+                        "This e-mail address does not belong ".
+                        "to any user of this blog."
+                    );
+                } else {
+                    $_ctx->error = $response->reason;
                 }
-                self::_login($users, $response);
-            } 
+            }
+            
+            self::serveDocument('browserid.html', 'text/html');
         }
         
-        self::serveDocument('browserid.html', 'text/html');
+        
+    }
+    
+    /**
+     * Display errors
+     * 
+     * @return string PHP code
+     * */
+    public static function error()
+    {
+        return "<?php ".
+        'global $_ctx; '.
+        'if ($_ctx->error!="") { '.
+        'echo "<div class=\"error\">".$_ctx->error."</div>"; '.
+        '} '.
+        "?>";
     }
 }
 ?>
