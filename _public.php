@@ -23,4 +23,3 @@ $core->url->register(
 );
 
 $core->tpl->addValue('error', array('BrowserID', 'error'));
- 
