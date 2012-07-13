@@ -41,7 +41,7 @@ class BrowserID extends dcUrlHandlers
                 $cookie_params=session_get_cookie_params();
                 session_set_cookie_params(
                     $cookie_params["lifetime"],
-                    dirname($_SERVER["PHP_SELF"])."/admin/"
+                    DC_ADMIN_URL
                 );
                 /*if(function_exists('ini_set')) {
                     ini_set('session.cookie_path', $cookie_params[3]."admin/");
@@ -49,7 +49,7 @@ class BrowserID extends dcUrlHandlers
                 $core->session->start();
                 $_SESSION['sess_user_id'] = $users->__get("user_id");
                 $_SESSION['sess_browser_uid'] = http::browserUID(DC_MASTER_KEY);
-                http::redirect('admin/index.php');
+                http::redirect(DC_ADMIN_URL."index.php");
             } 
         }
     }
