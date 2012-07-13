@@ -18,7 +18,7 @@ $this->registerModule(
     /* Name */            'BrowserID',
     /* Description */        'Login with BrowserID',
     /* Author */            'Pierre Rudloff',
-    /* Version */            '0.1',
+    /* Version */            '0.1.1',
     /* Permissions */        'usage,contentadmin'
 );
 ?>
