@@ -122,5 +122,15 @@ class BrowserID extends dcUrlHandlers
         '} '.
         "?>";
     }
+    
+    /**
+     * Return the path to the admin
+     * 
+     * @return string PHP code
+     * */
+    public static function adminpath()
+    {
+        return "<?php echo DC_ADMIN_URL; ?>";
+    }
 }
 ?>

@@ -22,4 +22,6 @@ $core->url->register(
     array('BrowserID','display')
 );
 
+
 $core->tpl->addValue('error', array('BrowserID', 'error'));
+$core->tpl->addValue('adminpath', array('BrowserID', 'adminpath'));
