@@ -21,7 +21,7 @@
  * @author   Pierre Rudloff <contact@rudloff.pro>
  * @license  http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License
  * @link     http://rudloff.pro
- * @link     https://browserid.org/
+ * @link     https://persona.org/
  * */
 class BrowserID extends dcUrlHandlers
 {
@@ -29,7 +29,7 @@ class BrowserID extends dcUrlHandlers
      * Check if the user is valid
      * 
      * @param object $users    List of users
-     * @param object $response Response from browserid.org
+     * @param object $response Response from persona.org
      * 
      * @return void
      * */
@@ -75,9 +75,11 @@ class BrowserID extends dcUrlHandlers
             self::serveDocument('login.js', 'application/javascript');
         } else {
             if (substr($args, 0, 9)=="assertion") {
-                $url = "https://browserid.org/verify";
+                $url = "https://verifier.login.persona.org/verify";
                 $curl = curl_init($url);
                 curl_setopt($curl, CURLOPT_POST, 1);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
                 curl_setopt(
                     $curl, CURLOPT_POSTFIELDS, "assertion=".strval(
                         substr($args, 10)
